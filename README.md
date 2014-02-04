@@ -52,7 +52,6 @@ npm install
 npm test
 ```
 
-
 ## The License (MIT)
 Copyright (c) 2014 TJ Eastmond
 
