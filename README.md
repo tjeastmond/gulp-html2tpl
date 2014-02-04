@@ -28,7 +28,7 @@ gulp.task('compile', function() {
 The name of the file to save your new template object to.
 
 #### options.varName
-Type: `String`
+Type: `String`<br />
 Default: `templates`
 
 What the variable name will be. By default is:
