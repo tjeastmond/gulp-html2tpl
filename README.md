@@ -38,7 +38,7 @@ var temaplates = {};
 ```
 
 #### options.precompile
-Type: `Boolean`
+Type: `Boolean`<br />
 Default: `true`
 
 Whether or not the HTML should be run through the Underscore.js `_.template()` function.
