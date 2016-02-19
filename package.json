@@ -27,10 +27,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "gulp-util": "~2.2.12",
-    "through": "~2.3.4",
-    "async": "~0.2.10",
-    "underscore": "~1.5.2"
+    "gulp-util": "*",
+    "through": "*",
+    "async": "*",
+    "underscore": "*"
   },
   "devDependencies": {
     "gulp": "~3.4.0",
