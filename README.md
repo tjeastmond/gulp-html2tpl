@@ -34,7 +34,7 @@ Default: `templates`
 What the variable name will be. By default is:
 
 ```javascript
-var temaplates = {};
+var templates = {};
 ```
 
 #### options.precompile
