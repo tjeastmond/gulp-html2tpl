@@ -18,7 +18,7 @@ module.exports = (filename, opts) ->
 		compiled = ["var " + options.varName + " = {};"]
 		makeString = (file, done) ->
 			val = if options.precompile is true
-				clean _.template(file.content).source
+				clean _.template(file.content, opts).source
 			else
 				escapeContent file.content
 
