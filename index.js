@@ -29,7 +29,7 @@ module.exports = function(filename, opts) {
     compiled = ["var " + options.varName + " = {};"];
     makeString = function(file, done) {
       var val;
-      val = options.precompile === true ? clean(_.template(file.content).source) : escapeContent(file.content);
+      val = options.precompile === true ? clean(_.template(file.content, opts).source) : escapeContent(file.content);
       compiled.push(options.varName + ("['" + file.name + "'] = " + val + ";"));
       return done(null);
     };
