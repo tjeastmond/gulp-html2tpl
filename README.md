@@ -1,55 +1,40 @@
-# gulp-html2tpl
+This is a fork of the original gulp-html2tpl by TJ Eastmond. It no longer uses
+coffee script, it also supports subfolders. It uses wildcard 
+package naming.
 
-Small gulp 3 plugin that will convert HTML files into Underscore.js templates and save them to filename supplied.
 
-## Install
+### Subfolders
 
-```shell
-npm install --save-dev gulp-html2tpl
+When the `options.subfolders = true` is set, the 
+html compiler from underscore templates, will 
+attempt to match the `options.basepath` against the 
+current file path and then construct the subfolders
+as sub-object of `templates = {}`. See usage.
+
+
+### Usage
+
+```
+  gulp.src(['static/partials/*.html', 'static/partials/*/*.html'])
+      .pipe(html2tpl('templates.js', {
+        variable:'data',
+        basepath:path.resolve('static/partials'),
+        subfolders:true,
+        precompile:true,
+        varName:"templates"
+      }))
+      .pipe(gulp.dest('static/dist'))
+
 ```
 
-## Usage
+this will output a 'templates.js' file to `static/dist/templates.js`
 
-```javascript
-var html2tpl = require('gulp-html2tpl');
 
-gulp.task('compile', function() {
-  gulp.src('templates/*.html')
-      .pipe(html2tpl('templates.js'))
-      .pipe(gulp.dest('dist'))
-});
 ```
-
-## API
-
-### gulp-html2tpl(filename, options)
-
-### filename
-The name of the file to save your new template object to.
-
-#### options.varName
-Type: `String`<br />
-Default: `templates`
-
-What the variable name will be. By default is:
-
-```javascript
-var temaplates = {};
-```
-
-#### options.precompile
-Type: `Boolean`<br />
-Default: `true`
-
-Whether or not the HTML should be run through the Underscore.js `_.template()` function.
-
-## Testing
-
-Open a terminal in the directory containing `gulp-html2tpl` and then:
-
-```shell
-npm install
-npm test
+    var templates = {}
+    templates['template_name'] = function() {...}
+    templates['subfolder'] = {};
+    templates['subfolder']['template_name'] = function() {...}
 ```
 
 ## The License (MIT)

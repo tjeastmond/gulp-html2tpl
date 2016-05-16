@@ -1,7 +1,7 @@
 {
   "name": "gulp-html2tpl",
-  "version": "0.5.1",
-  "homepage": "https://github.com/tjeastmond/gulp-html2tpl",
+  "version": "0.6.1",
+  "homepage": "https://github.com/gtzilla/gulp-html2tpl",
   "description": "Convert HTML files into a JS object containing pre-compiled underscore.js templates",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/tjeastmond/gulp-html2tpl.git"
+    "url": "git://github.com/gtzilla/gulp-html2tpl.git"
   },
   "keywords": [
     "underscore",
@@ -36,9 +36,6 @@
   "devDependencies": {
     "gulp": "~3.4.0",
     "gulp-concat": "~2.1.7",
-    "gulp-coffee": "~1.4.1",
-    "mocha": "~1.15.1",
-    "should": "~2.1.1",
-    "coffee-script": "~1.7.1"
+    "gulp-coffee": "~1.4.1"
   }
 }

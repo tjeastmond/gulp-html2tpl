@@ -70,7 +70,7 @@ module.exports = function(filename, opts) {
       var key = "['" + sfolders.join("']['") + "']";
       if(!subfolders[key]) {
         subfolders[key] = sfolders;
-        compiled.push(options.varName + key + " = [];");
+        compiled.push(options.varName + key + " = {};");
       }
       val = options.precompile === true ? clean(_.template(file.content, opts).source) : escapeContent(file.content);
       compiled.push( get_compiled_format( options, file, val)  );
