@@ -67,10 +67,11 @@ module.exports = function(filename, opts) {
       var val;
       var sfolders = collect_subfolders(options, file);
       var key = "['" + sfolders.join("']['") + "']";
-      if(!subfolders[key]) {
+      if(!subfolders[key] && sfolders.length) {
+        subfolders[key] = sfolders;
         compiled.push(options.varName + key + " = {};");
       }
-      subfolders[key] = sfolders;
+      
       val = options.precompile === true ? clean(_.template(file.content, opts).source) : escapeContent(file.content);
       compiled.push( get_compiled_format( options, file, val)  );
       return done(null);
