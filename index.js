@@ -27,14 +27,14 @@ function collect_subfolders(options, file) {
   build the string to print into filename (templates.js)
 
   templates['my_template'] = ...
-  tempplates['my_folder']['my_template']
+  tempplates['my_folder']['my_template'] = ...
 */
 function get_compiled_format(options, file, val) {
   var str = options.varName;
   var dirname = path.dirname(file.path);
   var data, names;
-  if(options.subfolders && dirname !== options.basepath) {
-    names = collect_subfolders(options, file);
+  names = collect_subfolders(options, file);
+  if(options.subfolders && names.length) {
     str += "['" + names.join("']['") + "']";
   }
   str += ("['" + file.name + "'] = " + val + ";");
@@ -60,18 +60,17 @@ module.exports = function(filename, opts) {
     return clean(string.replace(/"/gi, "\\\""));
   };
   compile = function(callback) {
-    var compiled, subfolders, makeString;
-    compiled = ["var " + options.varName + " = {};"];
-    subfolders = {};
-    makeString = function(file, done) {
+    var compiled = ["var " + options.varName + " = {};"];
+    var subfolders = {};
+    function makeString(file, done) {
       
       var val;
       var sfolders = collect_subfolders(options, file);
       var key = "['" + sfolders.join("']['") + "']";
       if(!subfolders[key]) {
-        subfolders[key] = sfolders;
         compiled.push(options.varName + key + " = {};");
       }
+      subfolders[key] = sfolders;
       val = options.precompile === true ? clean(_.template(file.content, opts).source) : escapeContent(file.content);
       compiled.push( get_compiled_format( options, file, val)  );
       return done(null);
@@ -81,13 +80,13 @@ module.exports = function(filename, opts) {
     });
   };
   contents = function(file) {
-    if (file.isNull()) {
+    if(file.isNull()) {
       return true;
     }
-    if (file.isStream()) {
+    if(file.isStream()) {
       return this.emit('error', new gutil.PluginError('gulp-html2obj', 'Steaming not supported'));
     }
-    if (file != null) {
+    if(file != null) {
       first = file;
     }
     return templates.push({
@@ -97,13 +96,12 @@ module.exports = function(filename, opts) {
     });
   };
   endStream = function() {
-    if (templates.length === 0) {
+    if(templates.length === 0) {
       this.emit('end');
     }
     return compile((function(_this) {
       return function(error, content) {
-        var newFile;
-        newFile = new gutil.File({
+        var newFile = new gutil.File({
           cwd: first.cwd,
           base: first.base,
           path: path.join(first.base, filename),
