@@ -1,22 +1,57 @@
 var async, gutil, path, through, _;
 
 gutil = require('gulp-util');
-
 through = require('through');
-
 path = require('path');
-
 async = require('async');
-
 _ = require('underscore');
 
+
+function last_directory(filepath) {
+  return filepath.split(path.sep).pop();
+}
+// a recursive solution would be cleaner
+function collect_subfolders(options, file) {
+  var names = [];
+  // breaks after 4 levels of nesting
+  var _paths = ["../", "../../", "../../../", "../../../../"];
+  for(var i=0, len=_paths.length; i<len; i++) {
+    var currpath = path.resolve(file.path, _paths[i]);
+    if(currpath !== options.basepath) {
+      names.push(last_directory(currpath));
+    } else break;
+  }
+  return names;
+}
+/**
+  build the string to print into filename (templates.js)
+
+  templates['my_template'] = ...
+  tempplates['my_folder']['my_template']
+*/
+function get_compiled_format(options, file, val) {
+  var str = options.varName;
+  var dirname = path.dirname(file.path);
+  var data, names;
+  if(options.subfolders && dirname !== options.basepath) {
+    names = collect_subfolders(options, file);
+    str += "['" + names.join("']['") + "']";
+  }
+  str += ("['" + file.name + "'] = " + val + ";");
+  return str;
+}
+
 module.exports = function(filename, opts) {
-  var clean, compile, contents, endStream, escapeContent, first, options, templates;
+  var clean, compile, 
+      contents, endStream, escapeContent, 
+      first, options, templates;
   templates = [];
   first = null;
   options = _.extend({
     varName: 'templates',
-    precompile: true
+    basepath:'/',
+    precompile: true,
+    subfolders:false
   }, opts);
   clean = function(string) {
     return string.replace(/\n|\t/gi, '');
@@ -25,12 +60,20 @@ module.exports = function(filename, opts) {
     return clean(string.replace(/"/gi, "\\\""));
   };
   compile = function(callback) {
-    var compiled, makeString;
+    var compiled, subfolders, makeString;
     compiled = ["var " + options.varName + " = {};"];
+    subfolders = {};
     makeString = function(file, done) {
+      
       var val;
+      var sfolders = collect_subfolders(options, file);
+      var key = "['" + sfolders.join("']['") + "']";
+      if(!subfolders[key]) {
+        subfolders[key] = sfolders;
+        compiled.push(options.varName + key + " = [];");
+      }
       val = options.precompile === true ? clean(_.template(file.content, opts).source) : escapeContent(file.content);
-      compiled.push(options.varName + ("['" + file.name + "'] = " + val + ";"));
+      compiled.push( get_compiled_format( options, file, val)  );
       return done(null);
     };
     return async.each(templates, makeString, function(error) {
@@ -49,6 +92,7 @@ module.exports = function(filename, opts) {
     }
     return templates.push({
       name: path.basename(file.path, path.extname(file.path)),
+      path:file.path,
       content: file.contents.toString('utf-8')
     });
   };
